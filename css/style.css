@@ -415,3 +415,20 @@ body { overscroll-behavior-y: auto; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { transition: none !important; }
 }
+
+/* Final wedding logo */
+.final-monogram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 12px auto;
+}
+
+.final-monogram img {
+    display: block;
+    width: 130px;
+    max-width: 45%;
+    height: auto;
+    object-fit: contain;
+}

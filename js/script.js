@@ -9,11 +9,11 @@
   let musicStarted = false;
   const setText = (id, value) => { const el = $(id); if (el && value != null) el.textContent = value; };
   const first = config.couple?.firstName || "Jayanth";
-  const second = config.couple?.secondName || "Monica";
+  const second = config.couple?.secondName || "Monika";
   document.title = `${first} & ${second} — Wedding Invitation`;
   document.querySelectorAll(".couple-name").forEach(el => { el.innerHTML = `${first} <i>&amp;</i> ${second}`; });
   document.querySelectorAll(".gold-heading").forEach(el => { if (el.textContent.includes("Jayanth")) el.innerHTML = `${first} <i>&amp;</i> ${second}`; });
-  document.querySelectorAll(".final-monogram").forEach(el => { el.innerHTML = `${first.charAt(0)} <i>♥</i> ${second.charAt(0)}`; });
+  
 
   // One shared venue for both celebrations.
   const venue = config.sharedVenue || {};
@@ -170,7 +170,7 @@
       for(let y=8;y<h;y+=12){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
       ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillStyle="#fff5dc";
       ctx.font="20px Georgia";ctx.fillText("✧",w/2,h/2-22);
-      ctx.font="500 10px Georgia";ctx.fillText("SCRATCH TO REVEAL",w/2,h/2+2);
+      ctx.font="500 10px Georgia";ctx.fillText("",w/2,h/2+2);
       ctx.font="17px Georgia";ctx.fillText("❧",w/2,h/2+25);
       ctx.globalCompositeOperation="destination-out";
     }
