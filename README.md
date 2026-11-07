@@ -23,3 +23,11 @@ Edit `js/config.js` to change names, dates, hidden message, shared venue address
 
 ## Publish on GitHub Pages
 Upload the contents of this folder (including the `assets/music` directory) to the repository's Pages branch/root. Keep the folder structure intact. The audio file must be committed along with the HTML, CSS, JavaScript and images.
+
+
+## Mobile layout and animation notes
+- Each invitation page adapts to the live mobile viewport height (`dvh`/`svh`) and respects device safe areas.
+- Text uses responsive font sizing and balanced line wrapping; pages expand vertically if a short screen needs more room.
+- Decorative petal and sparkle effects are enabled with capped particle counts for mobile performance.
+- Page-entry text reveals reverse as the guest scrolls back up. The cover can be opened again after returning to it.
+- Reduced-motion accessibility settings automatically disable decorative motion.

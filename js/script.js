@@ -57,30 +57,57 @@
     window.setTimeout(() => layer.remove(), 1900);
   }
 
-  function createCelebration(section, amount=32) {
-    if (!section) return;
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
+  const smallScreen = window.matchMedia?.("(max-width: 600px)").matches || false;
+
+  function createCelebration(section, amount = 14, sparkleCount = 10) {
+    if (!section || reducedMotion) return;
+
     let petals = section.querySelector(".petal-layer");
     let sparkles = section.querySelector(".sparkle-layer");
-    if (!petals) { petals=document.createElement("div"); petals.className="petal-layer"; section.appendChild(petals); }
-    if (!sparkles) { sparkles=document.createElement("div"); sparkles.className="sparkle-layer"; section.appendChild(sparkles); }
-    petals.replaceChildren(); sparkles.replaceChildren();
-    for (let i=0; i<amount; i++) {
-      const p=document.createElement("span"); p.className="petal"+(i%7===0?" gold":"");
-      p.style.setProperty("--x", `${Math.random()*100}%`);
-      p.style.setProperty("--w", `${9+Math.random()*12}px`);
-      p.style.setProperty("--rot", `${Math.random()*360}deg`);
-      p.style.setProperty("--dur", `${5.2+Math.random()*3.2}s`);
-      p.style.setProperty("--delay", `${Math.random()*.75}s`);
-      p.style.setProperty("--drift", `${-75+Math.random()*150}px`);
-      petals.appendChild(p);
+    if (!petals) {
+      petals = document.createElement("div");
+      petals.className = "petal-layer";
+      petals.setAttribute("aria-hidden", "true");
+      section.appendChild(petals);
     }
-    for (let i=0;i<22;i++) {
-      const s=document.createElement("span"); s.className="sparkle";
-      s.style.setProperty("--x",`${Math.random()*100}%`); s.style.setProperty("--y",`${5+Math.random()*90}%`);
-      s.style.setProperty("--s",`${6+Math.random()*10}px`); s.style.setProperty("--dur",`${1.2+Math.random()*1.2}s`);
-      s.style.setProperty("--delay",`${Math.random()*.8}s`); sparkles.appendChild(s);
+    if (!sparkles) {
+      sparkles = document.createElement("div");
+      sparkles.className = "sparkle-layer";
+      sparkles.setAttribute("aria-hidden", "true");
+      section.appendChild(sparkles);
     }
-    window.setTimeout(()=>{petals.replaceChildren();sparkles.replaceChildren();},9000);
+
+    petals.replaceChildren();
+    sparkles.replaceChildren();
+
+    for (let i = 0; i < amount; i++) {
+      const petal = document.createElement("span");
+      petal.className = "petal" + (i % 6 === 0 ? " gold" : "");
+      petal.style.setProperty("--x", `${Math.random() * 100}%`);
+      petal.style.setProperty("--w", `${smallScreen ? 8 : 10 + Math.random() * 10}px`);
+      petal.style.setProperty("--rot", `${Math.random() * 360}deg`);
+      petal.style.setProperty("--dur", `${5.8 + Math.random() * 2.4}s`);
+      petal.style.setProperty("--delay", `${Math.random() * 0.45}s`);
+      petal.style.setProperty("--drift", `${-55 + Math.random() * 110}px`);
+      petals.appendChild(petal);
+    }
+
+    for (let i = 0; i < sparkleCount; i++) {
+      const sparkle = document.createElement("span");
+      sparkle.className = "sparkle";
+      sparkle.style.setProperty("--x", `${Math.random() * 100}%`);
+      sparkle.style.setProperty("--y", `${5 + Math.random() * 90}%`);
+      sparkle.style.setProperty("--s", `${5 + Math.random() * 8}px`);
+      sparkle.style.setProperty("--dur", `${1.3 + Math.random() * 1.2}s`);
+      sparkle.style.setProperty("--delay", `${Math.random() * 0.7}s`);
+      sparkles.appendChild(sparkle);
+    }
+
+    window.setTimeout(() => {
+      petals.replaceChildren();
+      sparkles.replaceChildren();
+    }, 8500);
   }
 
   async function startMusicFromGesture() {
@@ -106,10 +133,9 @@
     // Start audio synchronously within the real user gesture, before animations/scroll.
     startMusicFromGesture();
     sealBurst();
-    createCelebration(cover, 20);
+    createCelebration(cover, smallScreen ? 16 : 22, smallScreen ? 10 : 14);
     cover?.classList.add("opening");
     const family = $("family");
-    createCelebration(family, 0);
     window.setTimeout(() => family?.scrollIntoView({behavior:"smooth", block:"start"}), 480);
   }
   $("openInvite")?.addEventListener("click", openInvitation);
@@ -124,19 +150,46 @@
     audio.addEventListener("error", () => { console.error("Music file failed to load:", audio.currentSrc); setText("soundToggleLabel","Music unavailable"); });
   }
 
-  // Smooth, reversible reveals. Observe sections as well as their individual text lines.
+  // Reversible text reveals plus a single, lightweight floral entrance per page.
   if ("IntersectionObserver" in window) {
     const revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        entry.target.classList.toggle("visible", entry.isIntersecting);
-        entry.target.querySelectorAll(".reveal").forEach((node, index) => {
-          node.classList.toggle("visible", entry.isIntersecting);
+        const visible = entry.isIntersecting;
+        entry.target.querySelectorAll(".reveal").forEach(node => {
+          node.classList.toggle("visible", visible);
         });
       });
-    }, {threshold:0.04, rootMargin:"0px 0px -4% 0px"});
-    document.querySelectorAll(".page-content").forEach(el => revealObserver.observe(el));
-    document.querySelectorAll("#cover .cover-frame").forEach(el => el.classList.add("visible"));
-  } else document.querySelectorAll(".reveal").forEach(el=>el.classList.add("visible"));
+    }, { threshold: 0.08, rootMargin: "0px 0px -3% 0px" });
+
+    document.querySelectorAll(".page-content").forEach(content => {
+      revealObserver.observe(content);
+    });
+    document.querySelectorAll("#cover .cover-frame").forEach(frame => {
+      frame.classList.add("visible");
+    });
+
+    const pageEntryObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const section = entry.target;
+        if (section.id !== "cover" && section.dataset.celebrated !== "true") {
+          section.dataset.celebrated = "true";
+          const isFamily = section.id === "family";
+          createCelebration(
+            section,
+            isFamily ? (smallScreen ? 14 : 20) : (smallScreen ? 7 : 12),
+            isFamily ? (smallScreen ? 10 : 14) : (smallScreen ? 5 : 8)
+          );
+        }
+      });
+    }, { threshold: 0.22 });
+
+    document.querySelectorAll(".scene").forEach(section => {
+      pageEntryObserver.observe(section);
+    });
+  } else {
+    document.querySelectorAll(".reveal").forEach(node => node.classList.add("visible"));
+  }
 
 
   // Countdown to the wedding muhurtham.
@@ -186,7 +239,16 @@
 
   // Restore closed cover when the guest scrolls back to the beginning.
   if ("IntersectionObserver" in window && cover) {
-    const coverObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting&&entry.intersectionRatio>.55){cover.classList.remove("opening");}}),{threshold:[.55]});
+    const coverObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
+          if (cover.classList.contains("opening")) {
+            cover.classList.remove("opening");
+            opened = false;
+          }
+        }
+      });
+    }, { threshold: [0.55] });
     coverObserver.observe(cover);
   }
 })();

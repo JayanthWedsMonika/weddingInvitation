@@ -432,3 +432,476 @@ body { overscroll-behavior-y: auto; -webkit-text-size-adjust: 100%; }
     height: auto;
     object-fit: contain;
 }
+
+/* =========================================================
+   RESPONSIVE MOBILE REFINEMENT
+   This final layer intentionally overrides earlier layout
+   experiments so every viewport uses one consistent system.
+   ========================================================= */
+:root {
+  --invite-width: 430px;
+  --invite-gutter: clamp(18px, 5.5vw, 28px);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: none;
+  scroll-padding-top: 0;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+  overscroll-behavior-y: contain;
+}
+
+main {
+  width: 100%;
+  min-width: 0;
+}
+
+.scene {
+  width: min(100%, var(--invite-width));
+  max-width: var(--invite-width);
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: auto;
+  margin-inline: auto;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+.cover {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding: clamp(12px, 2.5svh, 24px) 0;
+  display: grid;
+  place-items: center;
+}
+
+.cover-frame {
+  width: 100%;
+  max-width: 650px;
+  min-height: calc(100vh - 24px);
+  min-height: calc(100svh - 24px);
+  min-height: calc(100dvh - 24px);
+  height: auto;
+  padding: clamp(22px, 5svh, 42px) var(--invite-gutter) clamp(18px, 4svh, 30px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(7px, 1.6svh, 15px);
+}
+
+.cover-topline,
+.cover-bottom {
+  flex-wrap: nowrap;
+  max-width: 100%;
+  line-height: 1.4;
+}
+
+.cover-topline span,
+.cover-bottom span {
+  min-width: 0;
+}
+
+.cover-names {
+  font-size: clamp(3rem, 13.5vw, 5.25rem);
+  line-height: .88;
+  margin: clamp(6px, 1.5svh, 14px) 0;
+  max-width: 100%;
+}
+
+.cover-subtitle {
+  max-width: 30ch;
+  font-size: clamp(1rem, 4.2vw, 1.35rem);
+  line-height: 1.32;
+  text-wrap: balance;
+}
+
+.envelope-wrap {
+  flex: 0 0 auto;
+  width: min(270px, 72vw);
+  height: clamp(116px, 19svh, 160px);
+  margin: clamp(6px, 1.5svh, 14px) auto;
+}
+
+.page-content {
+  width: 100%;
+  max-width: 760px;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: auto;
+  margin-inline: auto;
+  padding:
+    max(62px, calc(env(safe-area-inset-top) + 48px))
+    var(--invite-gutter)
+    max(42px, calc(env(safe-area-inset-bottom) + 30px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  text-align: center;
+}
+
+.page-content > * {
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.page-content p,
+.page-content h2,
+.page-content h3,
+.page-content strong {
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.eyebrow {
+  max-width: 34ch;
+  font-size: clamp(7px, 1.9vw, 9px);
+  line-height: 1.55;
+  letter-spacing: clamp(.12em, .45vw, .22em);
+}
+
+.deity-name {
+  font-size: clamp(1.7rem, 7vw, 3.1rem);
+  line-height: 1.12;
+}
+
+.family-line {
+  max-width: 34ch;
+  font-size: clamp(1.08rem, 4.6vw, 1.55rem);
+  line-height: 1.25;
+}
+
+.invite-request,
+.reception-copy,
+.wedding-verse {
+  max-width: 34ch;
+  font-size: clamp(1rem, 4.25vw, 1.35rem);
+  line-height: 1.38;
+  text-wrap: balance;
+}
+
+.couple-name {
+  font-size: clamp(2.45rem, 10.5vw, 4.5rem);
+  line-height: 1.08;
+}
+
+.daughter-line,
+.blessing-footer {
+  max-width: 34ch;
+  font-size: clamp(1rem, 4.2vw, 1.3rem);
+  line-height: 1.38;
+}
+
+.script-heading {
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  line-height: 1.08;
+}
+
+.gold-heading {
+  font-size: clamp(2.15rem, 8.7vw, 4rem);
+  line-height: 1.08;
+}
+
+.event-detail strong {
+  max-width: 31ch;
+  font-size: clamp(1.08rem, 4.6vw, 1.55rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.venue-plaque,
+.muhurtham-plaque,
+.map-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 520px;
+}
+
+.venue-plaque strong,
+.muhurtham-plaque strong,
+.muhurtham-plaque b {
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+.countdown-grid {
+  width: 100%;
+  max-width: 560px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(4px, 1.8vw, 12px);
+}
+
+.count-unit {
+  min-width: 0;
+  padding: clamp(10px, 3vw, 18px) 3px;
+}
+
+.count-unit strong {
+  font-size: clamp(1.35rem, 6.2vw, 2.8rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.count-unit span {
+  font-size: clamp(6px, 1.8vw, 9px);
+  letter-spacing: .1em;
+}
+
+.countdown-date {
+  max-width: 100%;
+  font-size: clamp(7px, 2vw, 10px);
+  line-height: 1.6;
+  letter-spacing: .1em;
+}
+
+.scratch-card {
+  width: 100%;
+  max-width: 500px;
+  min-width: 0;
+  height: clamp(126px, 34vw, 158px);
+}
+
+.scratch-message {
+  font-size: clamp(.98rem, 4vw, 1.2rem);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.scratch-hint {
+  padding-inline: 8px;
+  font-size: clamp(7px, 2vw, 10px);
+  letter-spacing: .12em;
+}
+
+.venue-main-title {
+  font-size: clamp(1.9rem, 7vw, 2.8rem);
+  line-height: 1.12;
+}
+
+.venue-intro {
+  max-width: 32ch;
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.map-card h3 {
+  font-size: clamp(1.45rem, 6vw, 2rem);
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.shared-event .detail-label {
+  line-height: 1.5;
+  letter-spacing: .12em;
+}
+
+.shared-event strong {
+  font-size: clamp(1rem, 4.3vw, 1.25rem);
+  line-height: 1.25;
+}
+
+.map-venue-address {
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.map-link {
+  max-width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.final-monogram {
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px auto 0;
+}
+
+.final-monogram img {
+  display: block;
+  width: clamp(88px, 25vw, 130px);
+  max-width: 46%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Restore lightweight, GPU-friendly decorative animations on phones.
+   Particle counts are capped in JavaScript; no full-screen filters. */
+.petal-layer,
+.sparkle-layer {
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.petal {
+  filter: none;
+  will-change: transform, opacity;
+}
+
+.sparkle {
+  filter: none;
+  will-change: transform, opacity;
+}
+
+.burst-petal,
+.burst-spark {
+  will-change: transform, opacity;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition: opacity .62s ease, transform .72s cubic-bezier(.2, .75, .2, 1);
+  will-change: auto;
+}
+
+.reveal.from-left,
+.reveal.from-right,
+.reveal.from-top {
+  transform: translate3d(0, 16px, 0);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.page-border {
+  pointer-events: none;
+}
+
+.sound-toggle {
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, calc((100vw - var(--invite-width)) / 2 + 10px));
+  max-width: calc(100% - 20px);
+}
+
+/* Compact phones */
+@media (max-width: 390px) {
+  :root { --invite-gutter: 18px; }
+
+  .cover-frame {
+    padding-inline: 18px;
+    gap: clamp(6px, 1.2svh, 11px);
+  }
+
+  .cover-topline,
+  .cover-bottom {
+    gap: 6px;
+    font-size: 6px;
+    letter-spacing: .11em;
+  }
+
+  .cover-names {
+    font-size: clamp(2.85rem, 13.5vw, 3.7rem);
+  }
+
+  .page-content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .family-line,
+  .invite-request,
+  .reception-copy,
+  .wedding-verse,
+  .daughter-line,
+  .blessing-footer {
+    max-width: 32ch;
+  }
+
+  .count-unit {
+    padding-inline: 1px;
+  }
+
+  .count-unit span {
+    letter-spacing: .06em;
+  }
+
+  .shared-map-card {
+    padding: 14px 12px;
+  }
+}
+
+/* Very short phones and mobile landscape: let content flow vertically
+   instead of shrinking text until it becomes difficult to read. */
+@media (max-height: 700px) {
+  .page-content {
+    padding-top: max(54px, calc(env(safe-area-inset-top) + 38px));
+    padding-bottom: max(34px, calc(env(safe-area-inset-bottom) + 24px));
+  }
+
+  .eyebrow { margin-bottom: 9px; }
+  .family-line { margin-top: 7px; margin-bottom: 10px; }
+  .floral-divider { margin-top: 12px; margin-bottom: 6px; }
+  .event-detail { margin-block: 7px; }
+  .scratch-card { height: 126px; }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .scene {
+    width: min(100%, 760px);
+    max-width: 760px;
+  }
+
+  .page-content {
+    max-width: 680px;
+    min-height: 100dvh;
+    padding: 48px 28px 32px;
+  }
+
+  .cover-frame {
+    min-height: calc(100dvh - 20px);
+    max-width: 650px;
+    padding-block: 18px;
+    gap: 5px;
+  }
+
+  .cover-ornament { margin: 2px 0; font-size: 26px; }
+  .cover-kicker { margin: 0; }
+  .cover-names { font-size: clamp(2.6rem, 8vw, 3.5rem); margin: 2px 0; }
+  .cover-subtitle { margin: 0; font-size: .95rem; }
+  .envelope-wrap { height: 96px; width: 180px; margin: 2px auto; }
+  .seal { width: 56px; height: 56px; }
+  .seal-logo { width: 34px; height: 39px; }
+
+  .page-content > * { margin-block: 3px; }
+  .countdown-grid { max-width: 480px; }
+  .scratch-card { height: 112px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .petal, .sparkle, .burst-petal, .burst-spark {
+    animation: none !important;
+    display: none !important;
+  }
+}
