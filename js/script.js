@@ -40,13 +40,13 @@
     layer.style.top = `${sr.top + sr.height/2 - wr.top}px`;
     wrap.appendChild(layer);
     const glyphs = ["✿","❀","✽","✧","✦","❁"];
-    for (let i=0; i<64; i++) {
+    for (let i=0; i<34; i++) {
       const bit = document.createElement("span");
       const isSpark = i%4===0;
       bit.className = isSpark ? "burst-spark" : "burst-petal";
       bit.textContent = isSpark ? (i%8===0 ? "✦" : "✧") : glyphs[i%3];
-      const angle = Math.PI*2*i/64 + (Math.random()-.5)*.16;
-      const distance = 95 + Math.random()*165;
+      const angle = Math.PI*2*i/34 + (Math.random()-.5)*.16;
+      const distance = 65 + Math.random()*115;
       bit.style.setProperty("--dx", `${Math.cos(angle)*distance}px`);
       bit.style.setProperty("--dy", `${Math.sin(angle)*distance}px`);
       bit.style.setProperty("--rot", `${Math.random()*540-270}deg`);
@@ -106,14 +106,13 @@
     // Start audio synchronously within the real user gesture, before animations/scroll.
     startMusicFromGesture();
     sealBurst();
-    createCelebration(cover, 46);
+    createCelebration(cover, 20);
     cover?.classList.add("opening");
     const family = $("family");
-    createCelebration(family, 42);
+    createCelebration(family, 0);
     window.setTimeout(() => family?.scrollIntoView({behavior:"smooth", block:"start"}), 480);
   }
   $("openInvite")?.addEventListener("click", openInvitation);
-  $("openPrompt")?.addEventListener("click", openInvitation);
 
   if (soundButton && audio) {
     soundButton.addEventListener("click", async () => {
@@ -128,21 +127,17 @@
   // Smooth, reversible reveals. Observe sections as well as their individual text lines.
   if ("IntersectionObserver" in window) {
     const revealObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => entry.target.classList.toggle("visible", entry.isIntersecting));
-    }, {threshold:0.04, rootMargin:"0px 0px -4% 0px"});
-    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
-    const celebrationObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > .18) {
-          const section=entry.target;
-          if (section.dataset.celebrationPlayed === "yes") return;
-          section.dataset.celebrationPlayed="yes";
-          createCelebration(section, 28);
-        }
+        entry.target.classList.toggle("visible", entry.isIntersecting);
+        entry.target.querySelectorAll(".reveal").forEach((node, index) => {
+          node.classList.toggle("visible", entry.isIntersecting);
+        });
       });
-    }, {threshold:[.18,.35]});
-    ["family","reception","wedding","countdown"].forEach(id=>{const el=$(id);if(el)celebrationObserver.observe(el);});
+    }, {threshold:0.04, rootMargin:"0px 0px -4% 0px"});
+    document.querySelectorAll(".page-content").forEach(el => revealObserver.observe(el));
+    document.querySelectorAll("#cover .cover-frame").forEach(el => el.classList.add("visible"));
   } else document.querySelectorAll(".reveal").forEach(el=>el.classList.add("visible"));
+
 
   // Countdown to the wedding muhurtham.
   const target = new Date(config.weddingDateTime || "2026-11-20T09:20:00+05:30").getTime();
@@ -165,7 +160,7 @@
     let drawing=false, revealed=false, last=null, scratched=0, checkTimer=0;
     function paintScratchSurface() {
       const r=card.getBoundingClientRect(); const w=Math.max(1,r.width-14), h=Math.max(1,r.height-14);
-      const dpr=Math.min(window.devicePixelRatio||1,2);
+      const dpr=Math.min(window.devicePixelRatio||1,1.25);
       canvas.width=Math.round(w*dpr); canvas.height=Math.round(h*dpr);
       canvas.style.width=`${w}px`; canvas.style.height=`${h}px`;
       ctx.setTransform(dpr,0,0,dpr,0,0); ctx.globalCompositeOperation="source-over";
@@ -181,9 +176,9 @@
     }
     function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
     function strokeTo(p){ctx.save();ctx.globalCompositeOperation="destination-out";ctx.lineCap="round";ctx.lineJoin="round";ctx.lineWidth=38;ctx.beginPath();if(last){ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);}else{ctx.arc(p.x,p.y,19,0,Math.PI*2);}ctx.stroke();ctx.restore();last=p;scratched++;}
-    function checkReveal(){if(revealed||scratched<3)return;const px=ctx.getImageData(0,0,canvas.width,canvas.height).data;let clear=0,total=0;for(let i=3;i<px.length;i+=128){total++;if(px[i]<70)clear++;}if(clear/total>.30){revealed=true;card.classList.add("scratched");canvas.style.opacity="0";canvas.style.pointerEvents="none";if(hint)hint.textContent="MESSAGE REVEALED";window.setTimeout(()=>{ctx.clearRect(0,0,canvas.width,canvas.height);},420);}}
+    function checkReveal(){if(revealed||scratched<3)return;const px=ctx.getImageData(0,0,canvas.width,canvas.height).data;let clear=0,total=0;for(let i=3;i<px.length;i+=256){total++;if(px[i]<70)clear++;}if(clear/total>.30){revealed=true;card.classList.add("scratched");canvas.style.opacity="0";canvas.style.pointerEvents="none";if(hint)hint.textContent="MESSAGE REVEALED";window.setTimeout(()=>{ctx.clearRect(0,0,canvas.width,canvas.height);},420);}}
     canvas.addEventListener("pointerdown",e=>{if(revealed)return;drawing=true;last=null;canvas.setPointerCapture(e.pointerId);strokeTo(point(e));e.preventDefault();});
-    canvas.addEventListener("pointermove",e=>{if(!drawing||revealed)return;strokeTo(point(e));if(scratched%8===0){clearTimeout(checkTimer);checkTimer=window.setTimeout(checkReveal,100);}e.preventDefault();});
+    canvas.addEventListener("pointermove",e=>{if(!drawing||revealed)return;strokeTo(point(e));e.preventDefault();});
     ["pointerup","pointercancel","lostpointercapture"].forEach(name=>canvas.addEventListener(name,()=>{drawing=false;last=null;clearTimeout(checkTimer);checkReveal();}));
     paintScratchSurface();
     if("ResizeObserver" in window){new ResizeObserver(()=>{if(!revealed)paintScratchSurface();}).observe(card);}else window.addEventListener("resize",()=>{if(!revealed)paintScratchSurface();});

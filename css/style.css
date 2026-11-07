@@ -303,3 +303,115 @@ body{width:100%;overflow-x:hidden}
 @media(max-height:720px){.cover-frame{padding-top:35px;padding-bottom:20px;gap:6px}.cover-ornament{font-size:32px;margin:4px 0}.cover-names{font-size:3.7rem}.envelope-wrap{height:118px;margin:4px auto}.page-content{padding-top:60px;padding-bottom:50px}.family-content,.reception-content,.wedding-content,.countdown-content,.venues-content{gap:6px}.scratch-card{height:128px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.burst-petal,.burst-spark,.petal,.sparkle{animation:none;display:none}}
 .envelope-wrap{position:relative;z-index:3;overflow:visible}
+
+
+
+/* MOBILE PERFORMANCE + LAYOUT PASS
+   Avoid full-screen GPU layers, expensive noise filters and per-section particle loops.
+   Let native touch scrolling remain in control. */
+html { scroll-behavior: auto !important; scroll-snap-type: none !important; }
+body { overscroll-behavior-y: auto; -webkit-text-size-adjust: 100%; }
+.grain { display: none !important; }
+.scene { scroll-snap-align: none !important; min-height: 100svh; }
+.reveal {
+  will-change: auto !important;
+  backface-visibility: visible !important;
+  transition: opacity .38s ease, transform .42s ease !important;
+}
+.reveal.from-left, .reveal.from-right, .reveal.from-top { transform: translate3d(0,10px,0); }
+.reveal.visible { transform: translate3d(0,0,0); }
+.petal-layer, .sparkle-layer { display: none !important; }
+.reception-halo, .mandap-glow, .cover-glow { filter: none !important; }
+.envelope { filter: none !important; }
+.sound-toggle { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.page-number { display: none !important; }
+.cover-watermark { display: none !important; }
+
+@media (max-width: 600px) {
+  .scene { width: 100%; max-width: 100%; min-height: 100svh; overflow: clip; }
+  .cover { padding: 12px 0; }
+  .cover-frame {
+    width: 100%; min-height: calc(100svh - 24px);
+    padding: 26px 22px 20px; gap: 7px;
+    justify-content: space-evenly;
+  }
+  .cover-topline, .cover-bottom { gap: 7px; font-size: 6px; letter-spacing: .13em; }
+  .cover-topline i { width: 15px; }
+  .cover-ornament { font-size: 30px; margin: 8px 0 2px; }
+  .cover-kicker { font-size: 8px; letter-spacing: .19em; }
+  .cover-names {
+    font-size: clamp(3rem, 13.2vw, 3.9rem);
+    line-height: .84; margin: 7px 0 5px;
+  }
+  .cover-subtitle { font-size: 1rem; line-height: 1.25; margin: 3px 0 5px; }
+  .envelope-wrap { width: min(250px, 70vw); height: clamp(116px, 17vh, 142px); margin: 8px auto 4px; }
+  .seal { width: 62px; height: 62px; }
+  .seal-logo { width: 43px; height: 48px; }
+  .cover-bottom { margin-top: 4px; }
+  .page-content {
+    width: 100%; min-height: 100svh;
+    padding: max(48px, env(safe-area-inset-top) + 34px) 21px max(38px, env(safe-area-inset-bottom) + 28px);
+    gap: 0; justify-content: center;
+  }
+  .eyebrow { font-size: 7px; letter-spacing: .16em; margin-bottom: 9px; }
+  .deity-name { font-size: clamp(1.55rem, 7vw, 2rem); }
+  .family-line { font-size: clamp(1.02rem, 4.5vw, 1.22rem); line-height: 1.2; margin: 5px 0 8px; }
+  .invite-request { font-size: clamp(.98rem, 4.2vw, 1.12rem); line-height: 1.32; margin-bottom: 8px; }
+  .couple-name { font-size: clamp(2.3rem, 10vw, 3rem); line-height: 1; margin-bottom: 8px; }
+  .daughter-line { font-size: clamp(.98rem, 4vw, 1.1rem); line-height: 1.3; }
+  .ornament-rule, .gold-rule { margin: 9px auto; gap: 8px; }
+  .ornament-rule span, .gold-rule span { width: 31px; }
+  .floral-divider { font-size: 18px; margin: 9px 0 4px; }
+  .blessing-footer { font-size: .98rem; line-height: 1.3; }
+  .script-heading { font-size: clamp(2.35rem, 10vw, 3.25rem); margin-bottom: 4px; }
+  .large-flower, .mandap-symbol { font-size: 25px; margin-bottom: 3px; }
+  .gold-heading { font-size: clamp(2rem, 8.5vw, 2.8rem); margin-bottom: 8px; }
+  .reception-copy, .wedding-verse { font-size: clamp(1rem, 4.1vw, 1.14rem); line-height: 1.3; }
+  .event-detail { gap: 3px; margin: 6px 0; }
+  .detail-label { font-size: 7px; letter-spacing: .16em; }
+  .event-detail strong { font-size: clamp(1.02rem, 4.4vw, 1.2rem); line-height: 1.15; }
+  .venue-plaque { min-width: 0; width: 100%; padding: 10px 14px; margin-top: 7px; }
+  .venue-plaque strong { font-size: 1.3rem; margin-top: 4px; }
+  .page-footer { font-size: .9rem; margin-top: 9px; }
+  .seven-dots { gap: 8px; font-size: 11px; margin: 5px 0 9px; }
+  .seven-dots i { animation: none !important; }
+  .muhurtham-plaque { min-width: 0; width: 100%; padding: 12px 14px; gap: 4px; }
+  .muhurtham-plaque strong { font-size: 1.2rem; }
+  .muhurtham-plaque b { font-size: 1.08rem; }
+  .countdown-content .script-heading { font-size: clamp(2rem, 8.5vw, 2.8rem); }
+  .countdown-sub { font-size: 1rem; margin-bottom: 10px; }
+  .countdown-grid { gap: 5px; }
+  .count-unit { padding: 9px 2px 8px; box-shadow: none; }
+  .count-unit strong { font-size: clamp(1.25rem, 6vw, 1.65rem); }
+  .count-unit span { font-size: 6px; letter-spacing: .08em; margin-top: 5px; }
+  .countdown-date { font-size: 8px; letter-spacing: .1em; margin: 9px 0 4px; }
+  .scratch-intro { margin: 6px 0 5px; }
+  .scratch-intro h3 { font-size: 1.45rem; }
+  .scratch-intro p { font-size: .88rem; line-height: 1.25; }
+  .scratch-card { height: 132px; margin-top: 2px; box-shadow: none; }
+  .scratch-message { padding: 10px 12px; font-size: .98rem; line-height: 1.25; }
+  .scratch-hint { font-size: 8px; letter-spacing: .12em; }
+  .venue-main-title { font-size: 1.8rem; }
+  .venue-intro { font-size: .98rem; margin-bottom: 9px; }
+  .map-card { width: 100%; padding: 13px 12px; margin: 5px 0; box-shadow: none; }
+  .map-card-icon { font-size: 17px; margin-bottom: 2px; }
+  .map-card h3 { font-size: 1.45rem; line-height: 1.05; }
+  .shared-event { margin: 5px 0; }
+  .shared-event .detail-label { font-size: 6px; }
+  .shared-event strong { font-size: .98rem; }
+  .map-venue-address { font-size: 10px; line-height: 1.3; margin-bottom: 8px; }
+  .map-link { padding: 8px 10px; font-size: 7px; letter-spacing: .1em; }
+  .venue-closing { font-size: .9rem; }
+  .final-monogram { font-size: 1.6rem; margin-top: 4px; }
+  .sound-toggle { top: max(8px, env(safe-area-inset-top)); right: 9px; padding: 6px 9px; font-size: 8px; }
+}
+@media (max-width: 360px) {
+  .cover-names { font-size: 2.85rem; }
+  .page-content { padding-left: 17px; padding-right: 17px; }
+  .family-content { gap: 5px; }
+  .countdown-grid { gap: 3px; }
+  .scratch-card { height: 124px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none !important; }
+}
