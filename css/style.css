@@ -191,3 +191,44 @@ body{
   .map-card{padding:13px 11px}
   .cover-topline,.cover-bottom{gap:8px;font-size:6px}
 }
+
+/* Refined cover: velvet texture, botanical corners and the supplied M&J mark */
+.cover{isolation:isolate;background-color:#35101b;background-image:radial-gradient(ellipse at 50% 42%,#6b2c3a 0%,#481724 48%,#230911 100%),repeating-linear-gradient(115deg,#ffffff08 0 1px,transparent 1px 5px)}
+.cover:before{inset:13px;border-color:#d7b66d99;box-shadow:inset 0 0 35px #d9b66b12}
+.cover:after{inset:20px;border-color:#d7b66d55}
+.cover-floral-bg{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.34;background-image:radial-gradient(ellipse at 8% 12%,#d9b66b55 0 2px,transparent 3px),radial-gradient(ellipse at 12% 16%,#e7c9a1aa 0 5px,transparent 6px),radial-gradient(ellipse at 88% 18%,#d9b66b66 0 2px,transparent 3px),radial-gradient(ellipse at 84% 22%,#e7c9a1aa 0 5px,transparent 6px),radial-gradient(ellipse at 10% 82%,#d9b66b55 0 3px,transparent 4px),radial-gradient(ellipse at 90% 84%,#e7c9a1aa 0 5px,transparent 6px);background-size:100% 100%}
+.cover-floral-bg:before,.cover-floral-bg:after{content:"❀  ❧  ✿";position:absolute;color:#d9b66b;font:34px Georgia,serif;letter-spacing:13px;opacity:.52;left:-8px;top:9%;transform:rotate(-28deg);text-shadow:0 0 18px #e2c17b66}
+.cover-floral-bg:after{left:auto;right:-12px;top:auto;bottom:10%;transform:rotate(152deg)}
+.cover-watermark{position:absolute;z-index:1;width:min(66vw,300px);height:min(66vw,300px);object-fit:contain;left:50%;top:51%;transform:translate(-50%,-50%);opacity:.13;filter:drop-shadow(0 0 12px #d7b66d55);pointer-events:none}
+.cover-frame{z-index:2}
+.envelope{isolation:isolate}
+.envelope:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.18;background:repeating-linear-gradient(135deg,transparent 0 3px,#f7dfb322 4px,transparent 5px 8px)}
+.seal{display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,#c39a52,#90652f 58%,#58351d);border-color:#f4dfa8;box-shadow:0 0 0 4px #6e2534,0 0 0 5px #e3c47e,0 7px 14px #1b070d99,inset 0 0 0 3px #f5dfaa33}
+.seal-logo{width:42px;height:48px;object-fit:contain;filter:drop-shadow(0 1px 1px #3b210e);opacity:.98}
+.seal-ring{inset:5px;border:1px dotted #fff0c899}
+.seal-burst{position:absolute;inset:50% auto auto 50%;width:1px;height:1px;z-index:8;pointer-events:none}
+.burst-petal,.burst-spark{position:absolute;left:0;top:0;color:#f0d39a;font:22px Georgia,serif;text-shadow:0 2px 7px #5b2330;animation:sealBloom 1.15s cubic-bezier(.12,.75,.25,1) var(--delay) both}
+.burst-spark{font-size:17px;color:#fff0bd}
+@keyframes sealBloom{0%{opacity:0;transform:translate(-50%,-50%) scale(.15) rotate(0)}18%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.65) rotate(var(--rot))}}
+
+/* Motion tuned for mobile GPUs: animate opacity/transform only, avoid large blur work */
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+.reveal{transition:opacity .62s ease,transform .68s cubic-bezier(.22,.72,.2,1);will-change:opacity,transform;backface-visibility:hidden}
+.reveal.from-left{transform:translate3d(-28px,0,0)}
+.reveal.from-right{transform:translate3d(28px,0,0)}
+.reveal.from-top{transform:translate3d(0,-18px,0)}
+.reveal.visible{transform:translate3d(0,0,0)}
+.petal{filter:none;will-change:transform,opacity}
+.sparkle{filter:none;will-change:transform,opacity}
+.scratch-card{touch-action:pan-y;contain:paint}
+#scratchCanvas{display:block;touch-action:none;will-change:opacity}
+.scratch-message{padding:clamp(12px,4vw,22px);font-size:clamp(1rem,4.2vw,1.25rem);line-height:1.32;overflow-wrap:anywhere;word-break:normal}
+.scratch-hint{letter-spacing:.14em;font-size:clamp(8px,2.4vw,10px)}
+.shared-map-card{padding:22px 20px 20px}
+.shared-map-card h3{font-size:clamp(1.65rem,7vw,2.1rem);line-height:1.08;margin:9px 0 17px}
+.shared-event{display:flex;flex-direction:column;gap:4px;padding:11px 4px;border-top:1px solid #b8955f55}
+.shared-event strong{font:600 1.28rem "Cormorant Garamond",serif;color:#644438}
+.shared-event small{font:italic 1rem "Cormorant Garamond",serif;color:#806b54}
+.shared-map-card .map-venue-address{margin:10px 0 15px}
+@media(max-width:430px){.cover-watermark{width:72vw;height:72vw;top:50%;opacity:.12}.seal-logo{width:40px;height:46px}.reveal.from-left{transform:translate3d(-20px,0,0)}.reveal.from-right{transform:translate3d(20px,0,0)}}
+@media(prefers-reduced-motion:reduce){.reveal{will-change:auto}.burst-petal,.burst-spark{animation:none;display:none}}

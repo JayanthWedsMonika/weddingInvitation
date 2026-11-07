@@ -1,26 +1,10 @@
-# Jayanth & Monica — Wedding Invitation
+# Jayanth & Monika — Wedding Invitation
 
-A six-page, responsive wedding invitation website designed for GitHub Pages.
-
-## Pages
-1. Existing burgundy-and-gold envelope cover with interactive wax seal.
-2. Divine blessings, parents and couple introduction.
-3. Reception invitation.
-4. Wedding ceremony and Muhurtham.
-5. Live countdown to 20 November 2026, 9:20 AM IST, plus a scratch-to-reveal message.
-6. Reception and wedding venue cards with Google Maps links.
-
-## Quick edits
-Open `js/config.js` and edit:
-- `hiddenMessage`: the note guests discover by scratching.
-- `reception.address` and `reception.mapsUrl`.
-- `wedding.venue`, `wedding.address` and `wedding.mapsUrl`.
-- `musicFile` if you add a locally hosted MP3 at `assets/audio/music.mp3`.
-
-For Maps links, open the exact place in Google Maps, choose **Share**, copy the link, and paste it into the matching `mapsUrl` field. Keep the quotes around the URL.
+A mobile-first, six-section wedding invitation designed for GitHub Pages.
 
 ## Run locally
-Open `index.html` in a browser, or run a local server from this folder:
+
+Open `index.html` through a local web server (recommended):
 
 ```bash
 python3 -m http.server 8000
@@ -28,18 +12,22 @@ python3 -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
-## GitHub Pages
-Upload the contents of this folder to the root of your GitHub Pages repository (so `index.html` is at the repository root), commit, and enable Pages in repository Settings.
+## Personalise the invitation
 
-## Notes
-- The countdown uses the wedding's local India Standard Time offset (`+05:30`).
-- The cover's visual design and envelope-opening sequence are retained from the earlier project.
-- The site uses Google Fonts when online and elegant system fallbacks if offline.
-- No venue map URLs have been invented; add the exact share links in `js/config.js`.
+Edit `js/config.js`:
+- Couple names and countdown date/time.
+- `sharedVenue.name` and `sharedVenue.address`.
+- `sharedVenue.mapsUrl`: paste one Google Maps share URL. The same location is shown for both reception and wedding.
+- `hiddenMessage`: the scratch-to-reveal note.
 
+## Background music
 
-## Mobile-first layout
-The invitation is designed as a phone-sized experience (maximum 430px wide).
-On mobile it fills the screen edge-to-edge. On a desktop browser it stays centered
-at phone width so you can preview the actual mobile layout. For the best preview,
-open it on your phone or use your browser's device emulation (e.g. Chrome DevTools).
+Add an MP3 file named `wedding-music.mp3` inside `assets/music/`. The invitation attempts playback when the guest touches the wax seal (a user gesture, which is required by mobile browsers). The floating sound control can pause or resume it. No music track was supplied with this project, so add a track you have permission to use.
+
+## Logo
+
+The uploaded M&J monogram has been converted into a transparent antique-gold PNG and is used as the cover watermark and wax-seal emblem. Replace `assets/images/mj-monogram-gold.png` to use another logo.
+
+## Publish with GitHub Pages
+
+Upload the complete folder contents to the repository root (or configure Pages to use the folder containing `index.html`). Keep the `css`, `js`, and `assets` folders together with `index.html`.

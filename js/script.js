@@ -22,26 +22,19 @@
     el.innerHTML = `${first.charAt(0)} <i>♥</i> ${second.charAt(0)}`;
   });
 
-  setText("receptionVenueName", config.reception?.venue || "Sri Padmavathi Kalyana Mantapa");
-  setText("receptionVenueAddress", config.reception?.address || "Venue location link will be added here.");
-  setText("weddingVenueName", config.wedding?.venue || "Wedding venue");
-  setText("weddingVenueAddress", config.wedding?.address || "Venue location link will be added here.");
-
-  function setupMapLink(id, url) {
-    const link = $(id);
-    if (!link) return;
-    if (url && /^https:\/\/(maps\.app\.goo\.gl\/|((www\.)?google\.[^/]+\/maps\/))/i.test(url)) {
-      link.href = url;
-      link.setAttribute("aria-disabled", "false");
-      link.addEventListener("click", () => {});
-    } else {
-      link.href = "#";
-      link.setAttribute("aria-disabled", "true");
-      link.title = "Add the Google Maps share link in js/config.js";
-    }
+  const venue = config.sharedVenue || {};
+  setText("sharedVenueAddress", venue.address || "Add the full venue address in js/config.js.");
+  const venueHeading = document.querySelector(".shared-map-card h3");
+  if (venueHeading && venue.name) venueHeading.textContent = venue.name;
+  const sharedMap = $("sharedMapLink");
+  if (sharedMap && venue.mapsUrl && /^https:\/\/(maps\.app\.goo\.gl\/|((www\.)?google\.[^/]+\/maps\/))/i.test(venue.mapsUrl)) {
+    sharedMap.href = venue.mapsUrl;
+    sharedMap.setAttribute("aria-disabled", "false");
+  } else if (sharedMap) {
+    sharedMap.href = "#";
+    sharedMap.setAttribute("aria-disabled", "true");
+    sharedMap.title = "Add the shared Google Maps link in js/config.js";
   }
-  setupMapLink("receptionMapLink", config.reception?.mapsUrl);
-  setupMapLink("weddingMapLink", config.wedding?.mapsUrl);
 
   // Flower and sparkle burst: triggered on first opening and again on page entry.
   function createCelebration(section) {
@@ -50,7 +43,7 @@
     const sparkles = section.querySelector(".sparkle-layer");
     if (!petals || !sparkles) return;
     petals.replaceChildren(); sparkles.replaceChildren();
-    for (let i = 0; i < 58; i++) {
+    for (let i = 0; i < 30; i++) {
       const p = document.createElement("span");
       p.className = "petal" + (i % 8 === 0 ? " gold" : "");
       p.style.setProperty("--x", `${Math.random() * 100}%`);
@@ -61,7 +54,7 @@
       p.style.setProperty("--drift", `${-90 + Math.random() * 180}px`);
       petals.appendChild(p);
     }
-    for (let i = 0; i < 38; i++) {
+    for (let i = 0; i < 18; i++) {
       const s = document.createElement("span");
       s.className = "sparkle";
       s.style.setProperty("--x", `${Math.random() * 100}%`);
@@ -74,15 +67,43 @@
     window.setTimeout(() => { petals.replaceChildren(); sparkles.replaceChildren(); }, 11000);
   }
 
+  function sealBurst() {
+    const wrap = document.querySelector(".envelope-wrap");
+    if (!wrap) return;
+    const layer = document.createElement("div");
+    layer.className = "seal-burst";
+    wrap.appendChild(layer);
+    const petals = ["✿","❀","✽","✧","✦"];
+    for (let i=0;i<54;i++) {
+      const bit=document.createElement("span");
+      bit.className = i%4===0 ? "burst-spark" : "burst-petal";
+      bit.textContent = i%4===0 ? "✦" : petals[i%3];
+      const angle=(Math.PI*2*i)/54 + Math.random()*.16;
+      const distance=75+Math.random()*155;
+      bit.style.setProperty("--dx", `${Math.cos(angle)*distance}px`);
+      bit.style.setProperty("--dy", `${Math.sin(angle)*distance}px`);
+      bit.style.setProperty("--rot", `${Math.random()*360}deg`);
+      bit.style.setProperty("--delay", `${Math.random()*110}ms`);
+      layer.appendChild(bit);
+    }
+    window.setTimeout(()=>layer.remove(),1500);
+  }
+
   function openInvitation() {
     if (opened) return;
     opened = true;
+    sealBurst();
     cover.classList.add("opening");
     createCelebration($("family"));
     window.setTimeout(() => $("family").scrollIntoView({behavior:"smooth", block:"start"}), 720);
     if (audio && config.musicFile) {
       audio.src = config.musicFile;
-      audio.play().catch(() => {});
+      audio.volume = 0.72;
+      audio.play().then(() => {
+        if (soundButton) soundButton.querySelector(".sound-label").textContent = "Sound on";
+      }).catch(() => {
+        if (soundButton) soundButton.querySelector(".sound-label").textContent = "Tap for sound";
+      });
     }
   }
   $("openInvite")?.addEventListener("click", openInvitation);
@@ -99,7 +120,7 @@
   // Scroll reveal reverses on upward scroll by removing .visible when leaving view.
   const revealObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => entry.target.classList.toggle("visible", entry.isIntersecting));
-  }, {threshold:0.16, rootMargin:"0px 0px -4% 0px"});
+  }, {threshold:0.08, rootMargin:"0px 0px -2% 0px"});
   document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 
   // Re-run delicate flower showers when the guest arrives at each event page.
@@ -107,6 +128,8 @@
     entries.forEach(entry => {
       if (entry.isIntersecting && entry.intersectionRatio > 0.25) {
         const section = entry.target;
+        if (section.dataset.celebrationPlayed === "yes") return;
+        section.dataset.celebrationPlayed = "yes";
         if (section.id === "family" || section.id === "reception" || section.id === "wedding" || section.id === "countdown") {
           createCelebration(section);
         }
@@ -165,33 +188,44 @@
       ctx.font = "16px Georgia"; ctx.fillText("❧",w/2,h/2+25);
       ctx.globalCompositeOperation = "destination-out";
     }
-    function scratchAt(e) {
-      const r = canvas.getBoundingClientRect();
-      const x = e.clientX-r.left, y=e.clientY-r.top;
-      ctx.beginPath(); ctx.arc(x,y,19,0,Math.PI*2); ctx.fill();
+    let lastPoint = null;
+    function pointFrom(e) {
+      const r=canvas.getBoundingClientRect();
+      return {x:e.clientX-r.left,y:e.clientY-r.top};
     }
-    function revealIfEnough() {
-      const now = Date.now();
-      if (now-lastCheck < 220 || revealed) return;
-      lastCheck = now;
-      const pixels = ctx.getImageData(0,0,canvas.width,canvas.height).data;
-      let clear = 0;
-      for(let i=3;i<pixels.length;i+=4) if(pixels[i] < 80) clear++;
-      if (clear / (pixels.length/4) > .38) {
-        revealed = true; card.classList.add("scratched");
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        if(hint) hint.textContent = "MESSAGE REVEALED";
+    function scratchAt(e) {
+      const point=pointFrom(e);
+      ctx.save(); ctx.globalCompositeOperation="destination-out";
+      ctx.lineCap="round"; ctx.lineJoin="round"; ctx.lineWidth=42;
+      ctx.beginPath();
+      if(lastPoint){ctx.moveTo(lastPoint.x,lastPoint.y);ctx.lineTo(point.x,point.y);}
+      else {ctx.moveTo(point.x,point.y);ctx.lineTo(point.x+.1,point.y+.1);}
+      ctx.stroke(); ctx.restore(); lastPoint=point;
+    }
+    function revealIfEnough(force=false) {
+      const now=Date.now();
+      if((!force && now-lastCheck<650) || revealed) return;
+      lastCheck=now;
+      // Sample every 16th pixel to avoid a full-resolution readback on every move.
+      const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      let clear=0,total=0;
+      for(let i=3;i<pixels.length;i+=64){total++;if(pixels[i]<80)clear++;}
+      if(clear/total>.34){
+        revealed=true; card.classList.add("scratched");
+        canvas.style.transition="opacity .45s ease"; canvas.style.opacity="0";
+        window.setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),480);
+        if(hint) hint.textContent="MESSAGE REVEALED";
       }
     }
-    canvas.addEventListener("pointerdown", e => {
-      if(revealed) return;
-      drawing=true; canvas.setPointerCapture(e.pointerId); scratchAt(e);
+    canvas.addEventListener("pointerdown",e=>{
+      if(revealed)return;
+      drawing=true;lastPoint=pointFrom(e);canvas.setPointerCapture(e.pointerId);scratchAt(e);
     });
-    canvas.addEventListener("pointermove", e => {
-      if(!drawing || revealed) return;
-      scratchAt(e); revealIfEnough();
+    canvas.addEventListener("pointermove",e=>{
+      if(!drawing||revealed)return;
+      scratchAt(e);revealIfEnough();
     });
-    ["pointerup","pointercancel","lostpointercapture"].forEach(ev => canvas.addEventListener(ev,()=>{drawing=false;revealIfEnough();}));
+    ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>canvas.addEventListener(ev,()=>{drawing=false;lastPoint=null;revealIfEnough(true);}));
     paintScratchSurface();
     window.addEventListener("resize", () => { if(!revealed) paintScratchSurface(); });
   }
