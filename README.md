@@ -1,4 +1,4 @@
-# Jayanth & Monica — Wedding Invitation
+# Jayanth & Monika — Wedding Invitation
 
 A mobile-first, six-page wedding invitation designed for GitHub Pages.
 
@@ -26,8 +26,8 @@ Upload the contents of this folder (including the `assets/music` directory) to t
 
 
 ## Mobile layout and animation notes
-- Each invitation page adapts to the live mobile viewport height (`dvh`/`svh`) and respects device safe areas.
-- Text uses responsive font sizing and balanced line wrapping; pages expand vertically if a short screen needs more room.
-- Decorative petal and sparkle effects are enabled with capped particle counts for mobile performance.
-- Page-entry text reveals reverse as the guest scrolls back up. The cover can be opened again after returning to it.
-- Reduced-motion accessibility settings automatically disable decorative motion.
+- **Fluid sizing:** every size is in `rem`, and the root font-size is calculated from both the phone's width *and* height (`css/style.css`, top of file). Text, spacing and alignment scale together from small Androids to large iPhones, and pages simply grow taller if a short screen needs more room. Safe-area insets (notches / home bar) are respected.
+- **Animations:** only `transform` and `opacity` are animated. Scroll reveals are staggered and reversible, petals/sparkles only run for the page currently on screen, and page-to-page scrolling is driven by JavaScript so it is smooth on every phone.
+- **Reduced-motion:** if a phone has "Remove animations" / battery-saver motion limits switched on, text still fades in gently but the decorative loops (petals, shine, floating) are turned off.
+- **Interactive extras:** tap-to-open envelope with floral burst, music toggle, progress bar, page dots, "next page" arrows, animated countdown digits, scratch card with confetti, tap sparkles, and on the last page: Add-to-calendar (.ics), Copy address and Share on WhatsApp.
+- Calendar times and the share message live in `js/config.js` (`events`, `shareMessage`).
