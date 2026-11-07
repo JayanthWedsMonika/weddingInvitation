@@ -277,9 +277,9 @@ p,h1,h2,h3{margin:0}
   background:linear-gradient(135deg,#fff0d8,#d98b91 65%,#a94d5a);will-change:transform,opacity;
   animation:petalFall var(--dur) linear var(--delay) infinite}
 .petal.gold{background:linear-gradient(135deg,#fff4ce,#d9b76c)}
-@keyframes petalFall{0%{opacity:0;transform:translate3d(0,-4vh,0) rotate(var(--rot))}
-  10%{opacity:.9}50%{transform:translate3d(calc(var(--drift)*.2),55svh,0) rotate(calc(var(--rot) + 260deg))}
-  90%{opacity:.85}100%{opacity:0;transform:translate3d(var(--drift),108svh,0) rotate(calc(var(--rot) + 540deg))}}
+@keyframes petalFall{0%{opacity:0;transform:translate3d(0,-30px,0) rotate(var(--rot))}
+  10%{opacity:.9}50%{transform:translate3d(calc(var(--drift)*.2),calc(var(--fall,700px)*.5),0) rotate(calc(var(--rot) + 260deg))}
+  90%{opacity:.85}100%{opacity:0;transform:translate3d(var(--drift),var(--fall,700px),0) rotate(calc(var(--rot) + 540deg))}}
 .sparkle{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);background:#fff0c7;opacity:0;
   clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);will-change:transform,opacity;
   animation:twinkle var(--dur) ease-in-out var(--delay) infinite alternate}
@@ -332,11 +332,25 @@ body.opened .page-dots{opacity:1;transform:translate3d(0,-50%,0);pointer-events:
 }
 @media (min-width:600px){ .scene{box-shadow:0 0 5rem #000c} }
 
-/* ---------- Reduced motion: keep gentle fades, drop decorative loops ---------- */
-@media (prefers-reduced-motion:reduce){
-  .reveal,.reveal.from-left,.reveal.from-right,.reveal.from-top{transform:none;transition:opacity .5s ease}
-  .petal-layer,.sparkle-layer,.shine:after,.venue-plaque:after,.muhurtham-plaque:after{display:none}
-  .envelope,.cover-watermark,.cover-ornament,.scratch-card,.final-monogram img,.next-cue,.reception-halo,.open-prompt span,.seal:before{animation:none}
-  .cover-frame>*{animation-duration:.01s;animation-delay:0s!important}
-  .burst-petal,.burst-spark,.tap-spark{display:none}
-}
+
+/* ---------- Scroll lock until the seal is tapped ---------- */
+html.locked,html.locked body{overflow:hidden;overscroll-behavior:none}
+html.locked{touch-action:none}
+
+/* ---------- Seal highlight (always on, no reduced-motion switch-off) ---------- */
+.cover:not(.opening) .seal{animation:sealBeat 1.8s ease-in-out infinite}
+@keyframes sealBeat{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.1)}}
+.seal:after{content:"";position:absolute;inset:-.38rem;border-radius:50%;border:2px solid #f3d894;opacity:0;animation:ring 2s ease-out 1s infinite;pointer-events:none}
+.cover:not(.opening) .seal-shadow{width:7.4rem;height:7.4rem;background:radial-gradient(circle,#f8de9ccc 0,#f3d48866 38%,transparent 70%);animation:sealGlow 1.8s ease-in-out infinite}
+@keyframes sealGlow{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(.85)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
+.cover.opening .seal,.cover.opening .seal-shadow{animation:none}
+.cover.opening .seal-shadow{opacity:0}
+.open-prompt{transition:color .3s}
+.cover:not(.opening) .open-prompt{animation:rise .95s var(--ease) 1.05s backwards,promptPulse 1.8s ease-in-out 2s infinite}
+@keyframes promptPulse{0%,100%{opacity:.75}50%{opacity:1;text-shadow:0 0 .8rem #f3d488}}
+/* guest tried to scroll / tapped elsewhere: shake + brighten the seal */
+.cover.attention .seal{animation:sealShake .55s ease-in-out 2}
+@keyframes sealShake{0%,100%{transform:translate(-50%,-50%) scale(1.12)}20%{transform:translate(calc(-50% - .35rem),-50%) scale(1.16)}40%{transform:translate(calc(-50% + .35rem),-50%) scale(1.16)}60%{transform:translate(calc(-50% - .25rem),-50%) scale(1.14)}80%{transform:translate(calc(-50% + .25rem),-50%) scale(1.14)}}
+.cover.attention .seal:before,.cover.attention .seal:after{animation-duration:.8s;border-width:3px}
+.cover.attention .seal-shadow{animation-duration:.6s}
+.cover.attention .open-prompt{animation:none;color:#fff3c8;text-shadow:0 0 1rem #f7dc9a;opacity:1}

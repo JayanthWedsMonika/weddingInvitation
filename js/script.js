@@ -10,7 +10,10 @@
   const audio = $("bgMusic");
   const soundButton = $("soundToggle");
   const scenes = $$(".scene");
-  const reducedMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // Petals, seal highlight and reveals always run. Many phones report "reduced motion" when battery saver /
+  // "remove animations" is on, which used to switch these off.
+  const reducedMotion = false;
+  const root = document.documentElement;
   const isSmall = window.matchMedia ? window.matchMedia("(max-width: 600px)").matches : true;
   let opened = false;
   let wantMusic = false;
@@ -87,6 +90,7 @@
     if (!petals) { petals = document.createElement("div"); petals.className = "petal-layer"; petals.setAttribute("aria-hidden", "true"); section.appendChild(petals); }
     if (!sparkles) { sparkles = document.createElement("div"); sparkles.className = "sparkle-layer"; sparkles.setAttribute("aria-hidden", "true"); section.appendChild(sparkles); }
     petals.replaceChildren(); sparkles.replaceChildren();
+    petals.style.setProperty("--fall", `${section.offsetHeight + 40}px`);
     const pf = document.createDocumentFragment(), sf = document.createDocumentFragment();
     for (let i = 0; i < petalCount; i++) {
       const p = document.createElement("span");
@@ -115,6 +119,12 @@
     if (sc.id === "cover") buildFx(sc, isSmall ? 8 : 12, isSmall ? 7 : 10);
     else buildFx(sc, isSmall ? 7 : 11, isSmall ? 6 : 9);
   });
+
+  const updateFall = () => scenes.forEach(sc => {
+    const l = sc.querySelector(".petal-layer"); if (l) l.style.setProperty("--fall", `${sc.offsetHeight + 40}px`);
+  });
+  window.addEventListener("resize", updateFall, { passive: true });
+  window.addEventListener("load", updateFall);
 
   /* Floral burst from the wax seal */
   function sealBurst() {
@@ -198,9 +208,37 @@
   /* ------------------------------------------------------------------
      Open the invitation
   ------------------------------------------------------------------ */
+  /* Scroll stays locked until the seal is tapped; trying to scroll (or tapping elsewhere) highlights the seal. */
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+  const setLocked = on => root.classList.toggle("locked", on);
+  let attnTimer = 0, lastNudge = 0;
+  function nudgeSeal() {
+    if (opened || !cover) return;
+    cover.classList.remove("attention"); void cover.offsetWidth; cover.classList.add("attention");
+    buzz(12);
+    clearTimeout(attnTimer);
+    attnTimer = setTimeout(() => cover.classList.remove("attention"), 1300);
+  }
+  function guard(e) {
+    if (opened || !root.classList.contains("locked")) return;
+    if (e.cancelable) e.preventDefault();
+    const now = performance.now();
+    if (now - lastNudge > 700) { lastNudge = now; nudgeSeal(); }
+  }
+  document.addEventListener("touchmove", guard, { passive: false });
+  document.addEventListener("wheel", guard, { passive: false });
+  document.addEventListener("keydown", e => {
+    if (!["ArrowDown", "ArrowUp", "PageDown", "PageUp", "End", "Home", " "].includes(e.key)) return;
+    if (e.target.closest && e.target.closest("button, a")) return;
+    guard(e);
+  });
+  cover?.addEventListener("click", e => { if (!opened && !e.target.closest("#openInvite")) nudgeSeal(); });
+
   function openInvitation() {
     if (opened) return;
     opened = true; passedCover = false;
+    setLocked(false);
     buzz(25);
     startMusicFromGesture();
     sealBurst();
@@ -248,6 +286,10 @@
       if (r.top <= vh * 0.5 && r.bottom > vh * 0.5) { idx = i; break; }
     }
     if (idx !== activeIdx) { activeIdx = idx; dots.forEach((d, i) => d.classList.toggle("active", i === idx)); }
+    if (!opened) {
+      if (window.scrollY <= 2) setLocked(true);          // back at the cover with a closed envelope
+      else if (root.classList.contains("locked")) setLocked(false);
+    }
     if (opened && cover) {
       const bottom = cover.getBoundingClientRect().bottom;
       if (bottom < vh * 0.3) passedCover = true;
