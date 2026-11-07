@@ -232,3 +232,74 @@ html{scroll-behavior:smooth;scroll-snap-type:y proximity}
 .shared-map-card .map-venue-address{margin:10px 0 15px}
 @media(max-width:430px){.cover-watermark{width:72vw;height:72vw;top:50%;opacity:.12}.seal-logo{width:40px;height:46px}.reveal.from-left{transform:translate3d(-20px,0,0)}.reveal.from-right{transform:translate3d(20px,0,0)}}
 @media(prefers-reduced-motion:reduce){.reveal{will-change:auto}.burst-petal,.burst-spark{animation:none;display:none}}
+
+
+/* FINAL MOBILE-FIRST LAYOUT + MOTION REPAIR */
+html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-padding-top:0}
+body{width:100%;overflow-x:hidden}
+.scene{width:min(100%,430px);min-height:100svh;margin:0 auto;overflow:hidden;isolation:isolate;box-shadow:0 0 48px #09030766}
+.cover{width:min(100%,430px);min-height:100svh;padding:12px 0;display:grid;place-items:center;overflow:hidden}
+.cover-frame{width:100%;min-height:calc(100svh - 24px);padding:42px 26px 26px;justify-content:space-between;gap:clamp(8px,2vh,20px)}
+.cover-ornament{margin:clamp(8px,2vh,22px) 0 2px}
+.cover-kicker{margin:0}
+.cover-names{margin:8px 0;font-size:clamp(3.5rem,15vw,5.2rem);line-height:.78}
+.cover-subtitle{margin:4px 0 8px}
+.envelope-wrap{flex:0 0 auto;margin:12px auto 4px;height:clamp(126px,19vh,160px);z-index:3}
+.open-prompt{margin:4px 0 8px}
+.cover-bottom{margin:4px 0 0;flex:0 0 auto}
+.cover-floral-bg{opacity:.58;background-image:radial-gradient(ellipse at 5% 9%,#d7b56b55 0 3px,transparent 4px),radial-gradient(ellipse at 9% 13%,#f1d6b988 0 8px,transparent 9px),radial-gradient(ellipse at 95% 10%,#d7b56b55 0 3px,transparent 4px),radial-gradient(ellipse at 90% 15%,#f1d6b988 0 8px,transparent 9px),radial-gradient(ellipse at 6% 91%,#d7b56b55 0 3px,transparent 4px),radial-gradient(ellipse at 11% 86%,#f1d6b988 0 8px,transparent 9px),radial-gradient(ellipse at 94% 91%,#d7b56b55 0 3px,transparent 4px),radial-gradient(ellipse at 88% 85%,#f1d6b988 0 8px,transparent 9px)}
+.cover-watermark{width:min(72vw,300px);height:min(72vw,300px);top:49%;opacity:.16;mix-blend-mode:screen}
+.seal{width:76px;height:76px;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 32% 25%,#e0c17c 0%,#a77a3d 45%,#70451f 100%);border:1px solid #f8e7b8;box-shadow:0 0 0 4px #5a1b29,0 0 0 6px #d8b66d,0 8px 18px #12050a99,inset 0 0 0 3px #fff1c455}
+.seal-logo{width:50px;height:56px;object-fit:contain;filter:brightness(0) invert(1) sepia(.45) saturate(1.6) drop-shadow(0 1px 1px #3a210d);opacity:1}
+.seal-ring{inset:5px;border:1px dotted #fff1c9}
+.seal-burst{position:absolute;width:1px;height:1px;z-index:15;pointer-events:none}
+.burst-petal,.burst-spark{position:absolute;left:0;top:0;display:block;font:var(--size,22px)/1 Georgia,serif;color:#f4d9a0;text-shadow:0 2px 8px #40111e99;animation:sealBloom 1.65s cubic-bezier(.12,.72,.18,1) var(--delay,0ms) both;will-change:transform,opacity}
+.burst-spark{color:#fff6d7;text-shadow:0 0 12px #fff0bd;font-weight:bold}
+@keyframes sealBloom{0%{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.78) rotate(var(--rot))}}
+.cover.opening .envelope-flap{transform:rotateX(180deg);transition:transform .95s cubic-bezier(.2,.8,.2,1)}
+.cover.opening .seal{opacity:0;transform:translate(-50%,-50%) scale(1.8);transition:opacity .35s ease,transform .55s ease}
+.cover.opening .cover-frame{animation:coverFade 1.3s .25s forwards}
+.page-content{width:100%;max-width:430px;min-height:100svh;margin:0 auto;padding:clamp(66px,9vh,86px) clamp(20px,6vw,28px) clamp(54px,7vh,72px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0}
+.page-content>*{max-width:100%}
+.page-border{inset:10px;pointer-events:none}
+.page-border:after{inset:6px}
+.reveal{opacity:0;transform:translate3d(0,18px,0);transition:opacity .72s ease,transform .82s cubic-bezier(.2,.7,.2,1);will-change:opacity,transform;backface-visibility:hidden}
+.reveal.from-left{transform:translate3d(-24px,0,0)}
+.reveal.from-right{transform:translate3d(24px,0,0)}
+.reveal.from-top{transform:translate3d(0,-16px,0)}
+.reveal.visible{opacity:1;transform:translate3d(0,0,0)}
+/* Keep each page's typography and blocks centered, with breathing room on narrow phones. */
+.family-content{gap:clamp(7px,1.4vh,13px)}
+.family-content .eyebrow,.family-content .family-line,.family-content .invite-request,.family-content .couple-name,.family-content .daughter-line,.family-content .floral-divider,.family-content .blessing-footer{margin-top:0;margin-bottom:0}
+.deity-name{line-height:1.12}
+.reception-content,.wedding-content,.countdown-content,.venues-content{gap:clamp(7px,1.25vh,13px)}
+.reception-content .eyebrow,.wedding-content .eyebrow,.countdown-content .eyebrow,.venues-content .eyebrow{margin:0 0 8px}
+.reception-copy,.wedding-verse{max-width:360px}
+.event-detail{margin:5px 0;gap:4px}
+.venue-plaque{margin:6px 0 0;min-width:0;width:min(100%,370px)}
+.page-footer{margin:12px 0 0}
+.countdown-grid{width:100%;max-width:370px;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.count-unit{min-width:0;padding:12px 3px}
+.count-unit strong{font-size:clamp(1.45rem,6vw,2rem)}
+.count-unit span{font-size:clamp(6px,1.8vw,8px);letter-spacing:.1em}
+.scratch-intro{width:100%;margin:8px 0}
+.scratch-intro p{max-width:340px;margin-inline:auto}
+.scratch-card{width:100%;height:158px;margin:4px auto 0;padding:7px;overflow:hidden;contain:layout paint;border-radius:5px}
+.scratch-message{inset:7px;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px 18px;font-size:clamp(1rem,4.2vw,1.22rem);line-height:1.35;overflow-wrap:break-word;word-break:normal;white-space:normal}
+#scratchCanvas{position:absolute;inset:7px;display:block;width:calc(100% - 14px);height:calc(100% - 14px);touch-action:none;cursor:crosshair;transition:opacity .42s ease}
+.scratch-hint{left:8px;right:8px;letter-spacing:.1em;font-size:clamp(8px,2.3vw,10px)}
+.map-card{width:100%;max-width:370px;margin:8px auto;padding:20px 18px}
+.shared-map-card h3{line-height:1.12;overflow-wrap:normal}
+.shared-event{width:100%;align-items:center;text-align:center}
+.map-venue-address{max-width:100%;overflow-wrap:anywhere}
+.sound-toggle{right:max(12px,calc((100vw - 430px)/2 + 12px));top:12px;z-index:40}
+.sound-toggle.is-playing .sound-icon{animation:musicPulse 1.4s ease-in-out infinite}
+@keyframes musicPulse{50%{transform:scale(1.18);text-shadow:0 0 12px #f6d68a}}
+.petal-layer,.sparkle-layer{position:absolute;inset:0;z-index:8;overflow:hidden;pointer-events:none}
+.petal{top:-24px;filter:none;will-change:transform,opacity}
+.sparkle{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);background:#fff0c7;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0;animation:sparkleTwinkle var(--dur) ease-in-out var(--delay) infinite alternate;will-change:opacity,transform}
+@keyframes sparkleTwinkle{from{opacity:.1;transform:scale(.55) rotate(0)}to{opacity:.95;transform:scale(1.15) rotate(45deg)}}
+@media(max-width:380px){.cover-frame{padding-inline:20px}.cover-topline,.cover-bottom{font-size:6px;letter-spacing:.12em;gap:7px}.cover-names{font-size:clamp(3.2rem,15vw,4.4rem)}.page-content{padding-left:18px;padding-right:18px}.scratch-card{height:148px}.family-line{font-size:1.18rem}.invite-request{font-size:1.1rem}}
+@media(max-height:720px){.cover-frame{padding-top:35px;padding-bottom:20px;gap:6px}.cover-ornament{font-size:32px;margin:4px 0}.cover-names{font-size:3.7rem}.envelope-wrap{height:118px;margin:4px auto}.page-content{padding-top:60px;padding-bottom:50px}.family-content,.reception-content,.wedding-content,.countdown-content,.venues-content{gap:6px}.scratch-card{height:128px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}.burst-petal,.burst-spark,.petal,.sparkle{animation:none;display:none}}
+.envelope-wrap{position:relative;z-index:3;overflow:visible}
