@@ -36,3 +36,10 @@ Upload the contents of this folder to the root of your GitHub Pages repository (
 - The cover's visual design and envelope-opening sequence are retained from the earlier project.
 - The site uses Google Fonts when online and elegant system fallbacks if offline.
 - No venue map URLs have been invented; add the exact share links in `js/config.js`.
+
+
+## Mobile-first layout
+The invitation is designed as a phone-sized experience (maximum 430px wide).
+On mobile it fills the screen edge-to-edge. On a desktop browser it stays centered
+at phone width so you can preview the actual mobile layout. For the best preview,
+open it on your phone or use your browser's device emulation (e.g. Chrome DevTools).

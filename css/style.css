@@ -145,3 +145,49 @@ button{font:inherit}
 }
 @media(max-height:720px){.page-content{padding-top:60px;padding-bottom:48px}.eyebrow{margin-bottom:12px}.family-line{margin:7px 0 13px}.floral-divider{margin:14px 0 6px}.scratch-card{height:125px}.map-card{margin:6px 0;padding:12px 16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;scroll-snap-type:none}.reveal{opacity:1;transform:none;transition:none}.petal,.sparkle{display:none}.open-prompt span{animation:none}.seven-dots i{animation:none}}
+
+
+/* MOBILE-FIRST PRESENTATION
+   Each invitation sheet is phone-width (up to 430px), full-height and centered.
+   On an actual phone it fills the screen edge-to-edge; on desktop it previews
+   as the same elegant mobile invitation rather than stretching into a wide page. */
+body{
+  background:#18070d;
+}
+.scene{
+  width:min(100%,430px);
+  min-height:100svh;
+  margin-inline:auto;
+  box-shadow:0 0 55px #09030799;
+}
+.cover{
+  width:min(100%,430px);
+  min-height:100svh;
+}
+.page-content{
+  width:100%;
+  min-height:100svh;
+  padding-left:clamp(19px,6vw,28px);
+  padding-right:clamp(19px,6vw,28px);
+}
+.sound-toggle{
+  right:max(12px,calc((100vw - 430px)/2 + 12px));
+}
+@media(max-width:430px){
+  .scene,.cover{width:100%}
+  .page-border{inset:10px}
+  .page-border:after{inset:6px}
+  .page-content{padding-left:22px;padding-right:22px}
+  .cover-frame{min-height:100svh;padding-left:18px;padding-right:18px}
+  .cover-names{font-size:clamp(3.8rem,17vw,5.4rem)}
+  .countdown-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:360px){
+  .page-content{padding-left:17px;padding-right:17px}
+  .count-unit{padding:12px 2px 10px}
+  .count-unit strong{font-size:1.65rem}
+  .count-unit span{font-size:6px}
+  .scratch-card{height:132px}
+  .map-card{padding:13px 11px}
+  .cover-topline,.cover-bottom{gap:8px;font-size:6px}
+}
