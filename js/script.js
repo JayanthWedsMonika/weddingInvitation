@@ -346,7 +346,7 @@
     const h = Math.floor(ms / 3600000); ms %= 3600000;
     const m = Math.floor(ms / 60000); ms %= 60000;
     const s = Math.floor(ms / 1000);
-    setDigit("days", String(d).padStart(3, "0")); setDigit("hours", String(h).padStart(2, "0"));
+    setDigit("days", String(d).padStart(2, "0")); setDigit("hours", String(h).padStart(2, "0"));
     setDigit("minutes", String(m).padStart(2, "0")); setDigit("seconds", String(s).padStart(2, "0"));
     if (left <= 0) setText2(".countdown-sub", "Today, we begin our forever");
   }
